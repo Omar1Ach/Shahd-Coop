@@ -26,8 +26,10 @@ export interface IUser extends Document {
   wishlist: mongoose.Types.ObjectId[];
   twoFactorEnabled: boolean;
   twoFactorSecret?: string;
+  twoFactorBackupCodes?: { code: string; usedAt?: Date }[];
   emailVerificationToken?: string;
   emailVerificationExpires?: Date;
+  isEmailVerified: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   notificationPreferences: {
@@ -73,6 +75,12 @@ const UserSchema = new Schema<IUser>(
     wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
     twoFactorEnabled: { type: Boolean, default: false },
     twoFactorSecret: { type: String, select: false },
+    twoFactorBackupCodes: {
+      type: [{ code: { type: String }, usedAt: { type: Date } }],
+      select: false,
+      default: [],
+    },
+    isEmailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, select: false },
     emailVerificationExpires: { type: Date, select: false },
     passwordResetToken: { type: String, select: false },
