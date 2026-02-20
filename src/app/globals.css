@@ -1,35 +1,64 @@
-@import "./shahdcoop-tokens.css";
+/* ─────────────────────────────────────────────────────────────
+   ShahdCoop — Global Styles
+   Import order matters:
+   1. Design tokens (CSS custom properties)
+   2. Tailwind base
+   3. Base layer overrides
+───────────────────────────────────────────────────────────── */
 
+@import "../styles/tokens.css";
 @import "tailwindcss";
 
+/* ─── Tailwind theme bridge ───────────────────────────────────
+   Map our CSS custom property tokens into Tailwind's @theme so
+   utility classes like `text-honey-500` and `bg-primary` work.
+   Values must be static at build time — reference the raw hex
+   values (or var refs that resolve at parse time via the tokens
+   file imported above).
+──────────────────────────────────────────────────────────── */
 @theme {
-  /* ── Colors ── */
-  --color-honey-50:  var(--color-honey-50);
-  --color-honey-100: var(--color-honey-100);
-  --color-honey-200: var(--color-honey-200);
-  --color-honey-300: var(--color-honey-300);
-  --color-honey-400: var(--color-honey-400);
-  --color-honey-500: var(--color-honey-500);
-  --color-honey-600: var(--color-honey-600);
-  --color-honey-700: var(--color-honey-700);
-  --color-honey-800: var(--color-honey-800);
-  --color-honey-900: var(--color-honey-900);
-  --color-honey-950: var(--color-honey-950);
+  /* Honey palette */
+  --color-honey-50:  #FFF8ED;
+  --color-honey-100: #FFEFD4;
+  --color-honey-200: #FFDBA8;
+  --color-honey-300: #FFC170;
+  --color-honey-400: #FFA238;
+  --color-honey-500: #F48815;
+  --color-honey-600: #D86D0B;
+  --color-honey-700: #B4500B;
+  --color-honey-800: #923F10;
+  --color-honey-900: #7A3510;
+  --color-honey-950: #461904;
 
-  --color-botanical-50:  var(--color-botanical-50);
-  --color-botanical-100: var(--color-botanical-100);
-  --color-botanical-200: var(--color-botanical-200);
-  --color-botanical-300: var(--color-botanical-300);
-  --color-botanical-400: var(--color-botanical-400);
-  --color-botanical-500: var(--color-botanical-500);
-  --color-botanical-600: var(--color-botanical-600);
-  --color-botanical-700: var(--color-botanical-700);
+  /* Stone palette */
+  --color-stone-0:   #FFFFFF;
+  --color-stone-50:  #F9F7F4;
+  --color-stone-100: #F0ECE6;
+  --color-stone-200: #E2DCD3;
+  --color-stone-300: #CFC7BA;
+  --color-stone-400: #B5AA99;
+  --color-stone-500: #978A78;
+  --color-stone-600: #7B6E5E;
+  --color-stone-700: #655849;
+  --color-stone-800: #53493D;
+  --color-stone-900: #463E34;
+  --color-stone-950: #2A2520;
 
+  /* Botanical palette */
+  --color-botanical-50:  #F2F8F4;
+  --color-botanical-100: #DAEEE0;
+  --color-botanical-200: #B8DEC4;
+  --color-botanical-300: #86C69B;
+  --color-botanical-400: #57A872;
+  --color-botanical-500: #3D8F5A;
+  --color-botanical-600: #2F7347;
+  --color-botanical-700: #285C3B;
+
+  /* Semantic — these resolve at runtime via CSS vars */
   --color-primary:         var(--color-primary);
   --color-primary-hover:   var(--color-primary-hover);
   --color-primary-active:  var(--color-primary-active);
   --color-primary-light:   var(--color-primary-light);
-
   --color-bg:              var(--color-bg);
   --color-surface-1:       var(--color-surface-1);
   --color-surface-2:       var(--color-surface-2);
@@ -40,40 +69,40 @@
   --color-text-secondary:  var(--color-text-secondary);
   --color-text-muted:      var(--color-text-muted);
   --color-text-on-primary: var(--color-text-on-primary);
+  --color-success:         var(--color-success);
+  --color-success-bg:      var(--color-success-bg);
+  --color-warning:         var(--color-warning);
+  --color-warning-bg:      var(--color-warning-bg);
+  --color-error:           var(--color-error);
+  --color-error-bg:        var(--color-error-bg);
+  --color-info:            var(--color-info);
+  --color-info-bg:         var(--color-info-bg);
 
-  --color-success:    var(--color-success);
-  --color-success-bg: var(--color-success-bg);
-  --color-warning:    var(--color-warning);
-  --color-warning-bg: var(--color-warning-bg);
-  --color-error:      var(--color-error);
-  --color-error-bg:   var(--color-error-bg);
-  --color-info:       var(--color-info);
-  --color-info-bg:    var(--color-info-bg);
+  /* Typography — font family stacks */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body:    'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-arabic:  'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
 
-  /* ── Typography ── */
-  --font-display: var(--font-display);
-  --font-body:    var(--font-body);
-  --font-mono:    var(--font-mono);
-  --font-arabic:  var(--font-arabic);
+  /* Border radius */
+  --radius-none: 0;
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-2xl:  1.5rem;
+  --radius-full: 9999px;
 
-  /* ── Border Radius ── */
-  --radius-none: var(--radius-none);
-  --radius-sm:   var(--radius-sm);
-  --radius-md:   var(--radius-md);
-  --radius-lg:   var(--radius-lg);
-  --radius-xl:   var(--radius-xl);
-  --radius-2xl:  var(--radius-2xl);
-  --radius-full: var(--radius-full);
-
-  /* ── Shadows ── */
-  --shadow-sm:    var(--shadow-sm);
-  --shadow-md:    var(--shadow-md);
-  --shadow-lg:    var(--shadow-lg);
-  --shadow-xl:    var(--shadow-xl);
-  --shadow-2xl:   var(--shadow-2xl);
-  --shadow-honey: var(--shadow-honey);
+  /* Shadows */
+  --shadow-sm:    0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md:    0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg:    0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl:    0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  --shadow-2xl:   0 25px 50px -12px rgb(0 0 0 / 0.18);
+  --shadow-honey: 0 4px 24px -4px rgb(216 109 11 / 0.25);
 }
 
+/* ─── Base Layer ───────────────────────────────────────────── */
 @layer base {
   html {
     font-family: var(--font-body);
@@ -82,17 +111,37 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
   }
 
+  /* Focus ring — accessible, on-brand */
   *:focus-visible {
-    outline: var(--focus-ring);
-    outline-offset: var(--focus-ring-offset);
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
 
+  /* Headings use display font */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: var(--weight-bold);
+    font-weight: 600;
     color: var(--color-text-primary);
+    line-height: 1.2;
+  }
+
+  /* Remove default margin on p inside containers */
+  p {
+    line-height: 1.6;
+  }
+
+  /* Arabic content direction */
+  [lang="ar"], [dir="rtl"] {
+    font-family: var(--font-arabic);
+    direction: rtl;
+  }
+
+  /* Mono elements */
+  code, kbd, pre, samp {
+    font-family: var(--font-mono);
   }
 }

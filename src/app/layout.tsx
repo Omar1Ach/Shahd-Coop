@@ -1,51 +1,79 @@
-import type { Metadata } from "next";
-import { Inter, Playfair_Display, JetBrains_Mono, Noto_Sans_Arabic } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import {
+  Playfair_Display,
+  Source_Sans_3,
+  JetBrains_Mono,
+  Noto_Sans_Arabic,
+} from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 
-const inter = Inter({
-  variable: "--font-inter",
+// ─── Font Loading ─────────────────────────────────────────────
+// next/font automatically self-hosts and optimises fonts.
+// Each font is loaded once, tree-shaken, and inlined as CSS vars.
+
+const playfair = Playfair_Display({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-body",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
-const notoSansArabic = Noto_Sans_Arabic({
-  variable: "--font-noto-arabic",
+const notoArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arabic",
   display: "swap",
 });
 
+// ─── Viewport ────────────────────────────────────────────────
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F9F7F4" },
+    { media: "(prefers-color-scheme: dark)",  color: "#1A1714" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
+// ─── Metadata ────────────────────────────────────────────────
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.name,
+    default: `${siteConfig.name} — Premium Natural Honey`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  metadataBase: new URL(siteConfig.url),
+  keywords: ["honey", "natural", "organic", "bee products", "cooperative", "Morocco", "Maroc"],
+  authors: [{ name: "ShahdCoop" }],
+  creator: "ShahdCoop",
   openGraph: {
     type: "website",
     locale: "fr_MA",
+    alternateLocale: ["ar_MA", "en_US"],
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: siteConfig.name,
+    title: `${siteConfig.name} — Premium Natural Honey`,
     description: siteConfig.description,
-    images: [{ url: siteConfig.ogImage }],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
+    title: `${siteConfig.name} — Premium Natural Honey`,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
@@ -56,18 +84,20 @@ export const metadata: Metadata = {
   },
 };
 
+// ─── Root Layout ─────────────────────────────────────────────
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
+  const fontVars = [
+    playfair.variable,
+    sourceSans.variable,
+    jetbrainsMono.variable,
+    notoArabic.variable,
+  ].join(" ");
+
   return (
-    <html
-      lang="fr"
-      suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} ${notoSansArabic.variable}`}
-    >
-      <body className="antialiased bg-[var(--color-bg)] text-[var(--color-text-primary)]">
+    <html lang="fr" suppressHydrationWarning>
+      <body className={`${fontVars} antialiased`}>
         {children}
       </body>
     </html>
