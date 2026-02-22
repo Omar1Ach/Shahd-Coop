@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { loginSchema } from "@/lib/validations/auth";
+import { verifyBackupCode, verifyTotp } from "@/lib/auth/totp";
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -24,7 +25,7 @@ export const authConfig: NextAuthConfig = {
 
         await connectDB();
         const user = await User.findOne({ email: parsed.data.email }).select(
-          "+password"
+          "+password +twoFactorSecret +twoFactorEnabled +twoFactorBackupCodes"
         );
         if (!user || !user.password) return null;
 
@@ -32,6 +33,37 @@ export const authConfig: NextAuthConfig = {
         if (!valid) return null;
 
         if (!user.isEmailVerified) return null;
+
+        if (user.twoFactorEnabled) {
+          const rawTotp = (credentials as { totpCode?: string })?.totpCode;
+          const totpCode = rawTotp?.toString().trim();
+          const isBackupCode =
+            (credentials as { isBackupCode?: boolean | string })?.isBackupCode ===
+            true ||
+            (credentials as { isBackupCode?: boolean | string })?.isBackupCode === "true";
+
+          if (!totpCode) {
+            throw new Error("TWO_FACTOR_REQUIRED");
+          }
+
+          if (isBackupCode) {
+            const codes = user.twoFactorBackupCodes ?? [];
+            const matchIndex = codes.findIndex(
+              (entry) => !entry.usedAt && verifyBackupCode(totpCode, entry.code)
+            );
+            if (matchIndex === -1) {
+              throw new Error("INVALID_TWO_FACTOR_CODE");
+            }
+            codes[matchIndex].usedAt = new Date();
+            user.twoFactorBackupCodes = codes;
+            await user.save();
+          } else {
+            const isValid = verifyTotp(totpCode, user.twoFactorSecret ?? "");
+            if (!isValid) {
+              throw new Error("INVALID_TWO_FACTOR_CODE");
+            }
+          }
+        }
 
         return {
           id: user._id.toString(),
