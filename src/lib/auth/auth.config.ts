@@ -66,18 +66,19 @@ export const authConfig: NextAuthConfig = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      // Only set role on initial sign-in or explicit update — not on every request
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role ?? "customer";
       }
-      // refresh role from DB on every login
-      if (token.id) {
+      // Only refresh from DB when session is explicitly updated (e.g. role change)
+      if (trigger === "update" && token.id) {
         await connectDB();
-        const dbUser = await User.findById(token.id).select("role isBanned");
+        const dbUser = await User.findById(token.id).select("role isBanned").lean();
         if (dbUser) {
-          token.role = dbUser.role;
-          token.isBanned = dbUser.isBanned;
+          token.role = (dbUser as { role: string }).role;
+          token.isBanned = (dbUser as { isBanned?: boolean }).isBanned ?? false;
         }
       }
       return token;
