@@ -20,7 +20,9 @@ export interface IUser extends Document {
   emailVerified: Date | null;
   password?: string;
   image?: string;
+  avatar?: string;
   phone?: string;
+  provider?: "credentials" | "google";
   role: Role;
   addresses: IAddress[];
   wishlist: mongoose.Types.ObjectId[];
@@ -32,6 +34,7 @@ export interface IUser extends Document {
   isEmailVerified: boolean;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
+  isBanned?: boolean;
   notificationPreferences: {
     email: boolean;
     sms: boolean;
@@ -66,11 +69,13 @@ const UserSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    emailVerified: { type: Date, default: null },
-    password: { type: String, select: false },
-    image: { type: String },
-    phone: { type: String },
-    role: { type: String, enum: ["customer", "member", "admin"], default: "customer" },
+  emailVerified: { type: Date, default: null },
+  password: { type: String, select: false },
+  image: { type: String },
+  avatar: { type: String },
+  phone: { type: String },
+  provider: { type: String, enum: ["credentials", "google"], default: "credentials" },
+  role: { type: String, enum: ["customer", "member", "admin"], default: "customer" },
     addresses: { type: [AddressSchema], default: [] },
     wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
     twoFactorEnabled: { type: Boolean, default: false },
@@ -83,8 +88,9 @@ const UserSchema = new Schema<IUser>(
     isEmailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, select: false },
     emailVerificationExpires: { type: Date, select: false },
-    passwordResetToken: { type: String, select: false },
-    passwordResetExpires: { type: Date, select: false },
+  passwordResetToken: { type: String, select: false },
+  passwordResetExpires: { type: Date, select: false },
+  isBanned: { type: Boolean, default: false },
     notificationPreferences: {
       email: { type: Boolean, default: true },
       sms: { type: Boolean, default: false },
