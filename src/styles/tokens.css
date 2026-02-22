@@ -54,6 +54,41 @@
   --color-botanical-600: #2F7347;
   --color-botanical-700: #285C3B;
 
+  /* --- Design System Alias Tokens --- */
+  --honey-50:  var(--color-honey-50);
+  --honey-100: var(--color-honey-100);
+  --honey-200: var(--color-honey-200);
+  --honey-300: var(--color-honey-300);
+  --honey-400: var(--color-honey-400);
+  --honey-500: var(--color-honey-500);
+  --honey-600: var(--color-honey-600);
+  --honey-700: var(--color-honey-700);
+  --honey-800: var(--color-honey-800);
+  --honey-900: var(--color-honey-900);
+  --honey-950: var(--color-honey-950);
+
+  --stone-0:   var(--color-stone-0);
+  --stone-50:  var(--color-stone-50);
+  --stone-100: var(--color-stone-100);
+  --stone-200: var(--color-stone-200);
+  --stone-300: var(--color-stone-300);
+  --stone-400: var(--color-stone-400);
+  --stone-500: var(--color-stone-500);
+  --stone-600: var(--color-stone-600);
+  --stone-700: var(--color-stone-700);
+  --stone-800: var(--color-stone-800);
+  --stone-900: var(--color-stone-900);
+  --stone-950: var(--color-stone-950);
+
+  --botanical-50:  var(--color-botanical-50);
+  --botanical-100: var(--color-botanical-100);
+  --botanical-200: var(--color-botanical-200);
+  --botanical-300: var(--color-botanical-300);
+  --botanical-400: var(--color-botanical-400);
+  --botanical-500: var(--color-botanical-500);
+  --botanical-600: var(--color-botanical-600);
+  --botanical-700: var(--color-botanical-700);
+
   /* --- Semantic (Light Mode) --- */
   --color-success:    var(--color-botanical-500);
   --color-success-bg: var(--color-botanical-50);
@@ -63,6 +98,13 @@
   --color-error-bg:   #FEF2F2;
   --color-info:       #3B7EC7;
   --color-info-bg:    #EFF6FF;
+
+  --error:    var(--color-error);
+  --error-bg: var(--color-error-bg);
+  --warning:  var(--color-warning);
+  --warning-bg: var(--color-warning-bg);
+  --info:     var(--color-info);
+  --info-bg:  var(--color-info-bg);
 
   /* --- Surfaces (Light Mode) --- */
   --color-bg:             var(--color-stone-50);
@@ -76,6 +118,16 @@
   --color-text-muted:     var(--color-stone-400);
   --color-text-on-primary: #FFFFFF;
 
+  --bg:       var(--color-bg);
+  --s1:       var(--color-surface-1);
+  --s2:       var(--color-surface-2);
+  --s3:       var(--color-surface-3);
+  --border-s: var(--color-border-subtle);
+  --border-d: var(--color-border);
+  --txt-p:    var(--color-text-primary);
+  --txt-s:    var(--color-text-secondary);
+  --txt-m:    var(--color-text-muted);
+
   /* --- Primary Action (Light Mode) --- */
   --color-primary:       var(--color-honey-600);
   --color-primary-hover: var(--color-honey-700);
@@ -84,6 +136,34 @@
 
   /* --- Focus Ring --- */
   --color-focus-ring: var(--color-honey-400);
+
+  /* --- Component Tokens --- */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-hover: var(--color-primary-hover);
+  --btn-primary-text: var(--color-text-on-primary);
+
+  --btn-secondary-text: var(--honey-700);
+  --btn-secondary-border: var(--honey-300);
+  --btn-secondary-hover-bg: var(--honey-50);
+
+  --btn-ghost-text: var(--stone-700);
+  --btn-ghost-hover-bg: var(--stone-100);
+
+  --btn-destructive-text: var(--error);
+  --btn-destructive-border: #E8AAAA;
+  --btn-destructive-hover-bg: var(--error-bg);
+
+  --input-bg: var(--stone-0);
+  --input-border: var(--stone-200);
+  --input-text: var(--stone-900);
+  --input-placeholder: var(--stone-400);
+  --input-focus-border: var(--honey-500);
+  --input-focus-shadow: var(--honey-100);
+  --input-error-shadow: var(--error-bg);
+  --input-label: var(--stone-700);
+
+  --card-bg: var(--stone-0);
+  --card-border: var(--stone-200);
 }
 
 
@@ -116,6 +196,33 @@
     --color-info-bg:    #162236;
 
     --color-focus-ring: var(--color-honey-500);
+
+    --btn-primary-bg: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-text-on-primary);
+
+    --btn-secondary-text: var(--honey-400);
+    --btn-secondary-border: rgba(255, 162, 56, 0.3);
+    --btn-secondary-hover-bg: rgba(255, 162, 56, 0.08);
+
+    --btn-ghost-text: #B5AA99;
+    --btn-ghost-hover-bg: #2E2A22;
+
+    --btn-destructive-text: var(--color-error);
+    --btn-destructive-border: #E8AAAA;
+    --btn-destructive-hover-bg: var(--color-error-bg);
+
+    --input-bg: #242019;
+    --input-border: #4D453A;
+    --input-text: #F0ECE6;
+    --input-placeholder: #7B6E5E;
+    --input-focus-border: var(--honey-500);
+    --input-focus-shadow: rgba(255, 162, 56, 0.15);
+    --input-error-shadow: rgba(232, 112, 112, 0.2);
+    --input-label: #B5AA99;
+
+    --card-bg: #242019;
+    --card-border: #3A342B;
   }
 }
 
@@ -147,6 +254,33 @@
   --color-info-bg:    #162236;
 
   --color-focus-ring: var(--color-honey-500);
+
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-hover: var(--color-primary-hover);
+  --btn-primary-text: var(--color-text-on-primary);
+
+  --btn-secondary-text: var(--honey-400);
+  --btn-secondary-border: rgba(255, 162, 56, 0.3);
+  --btn-secondary-hover-bg: rgba(255, 162, 56, 0.08);
+
+  --btn-ghost-text: #B5AA99;
+  --btn-ghost-hover-bg: #2E2A22;
+
+  --btn-destructive-text: var(--color-error);
+  --btn-destructive-border: #E8AAAA;
+  --btn-destructive-hover-bg: var(--color-error-bg);
+
+  --input-bg: #242019;
+  --input-border: #4D453A;
+  --input-text: #F0ECE6;
+  --input-placeholder: #7B6E5E;
+  --input-focus-border: var(--honey-500);
+  --input-focus-shadow: rgba(255, 162, 56, 0.15);
+  --input-error-shadow: rgba(232, 112, 112, 0.2);
+  --input-label: #B5AA99;
+
+  --card-bg: #242019;
+  --card-border: #3A342B;
 }
 
 

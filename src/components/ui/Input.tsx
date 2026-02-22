@@ -21,7 +21,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={inputId}
             className="text-sm font-medium"
-            style={{ color: "var(--color-text-primary)" }}
+            style={{ color: "var(--input-label)" }}
           >
             {label}
           </label>
@@ -36,12 +36,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              "w-full rounded-lg border px-3 py-2 text-sm transition-colors",
-              "bg-[var(--color-surface-1)] text-[var(--color-text-primary)]",
-              "border-[var(--color-border)] placeholder:text-[var(--color-text-muted)]",
-              "focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20",
+              "w-full h-10 rounded-[8px] border-[1.5px] px-4 text-base transition-colors",
+              "bg-[var(--input-bg)] text-[var(--input-text)]",
+              "border-[var(--input-border)] placeholder:text-[var(--input-placeholder)]",
+              "focus:border-[var(--input-focus-border)] focus:outline-none focus:shadow-[0_0_0_3px_var(--input-focus-shadow)]",
               "disabled:cursor-not-allowed disabled:opacity-50",
-              error && "border-red-500 focus:border-red-500 focus:ring-red-500/20",
+              error && "border-[var(--error)] focus:border-[var(--error)] focus:shadow-[0_0_0_3px_var(--input-error-shadow)]",
               leftIcon && "pl-9",
               rightIcon && "pr-9",
               className
@@ -54,9 +54,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-[var(--error)]">{error}</p>}
         {hint && !error && (
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+          <p className="text-xs" style={{ color: "var(--txt-m)" }}>
             {hint}
           </p>
         )}
