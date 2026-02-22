@@ -1,7 +1,7 @@
-import { auth } from "@/lib/auth";
 import { apiRateLimit, authRateLimit, checkoutRateLimit, checkRateLimit } from "@/lib/redis/rate-limit";
 import { routing } from "@/i18n/routing";
 import createIntlMiddleware from "next-intl/middleware";
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -61,9 +61,8 @@ function applySecurityHeaders(res: NextResponse) {
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-export default auth(async function middleware(req: NextRequest & { auth: unknown }) {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const session = (req as { auth?: { user?: { role?: string } } }).auth;
 
   if (pathname.startsWith("/api/")) {
     const id = getIdentifier(req);
@@ -102,7 +101,12 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
   }
 
   // Require auth for protected paths
-  if (!session?.user) {
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  });
+
+  if (!token) {
     const loginUrl = new URL(`/${locale}/auth/login`, req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     const res = NextResponse.redirect(loginUrl);
@@ -110,7 +114,7 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return res;
   }
 
-  const role = session.user.role;
+  const role = (token as { role?: string }).role;
 
   // Admin-only routes
   if (normalizedPath.startsWith("/admin") && role !== "admin") {
@@ -129,7 +133,7 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
   const res = NextResponse.next();
   applySecurityHeaders(res);
   return res;
-});
+}
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
