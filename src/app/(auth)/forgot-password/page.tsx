@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
         <CardContent>
           {sent ? (
             <div className="text-center text-sm text-[var(--color-text-secondary)]">
-              <p>✅ If that email exists, a reset link has been sent.</p>
+              <p>If that email exists, a reset link has been sent.</p>
               <Link href="/login" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
                 Back to Sign In
               </Link>
