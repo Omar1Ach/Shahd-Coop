@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const user = await User.findOne({
       passwordResetToken: token,
-      passwordResetExpiry: { $gt: new Date() },
+      passwordResetExpires: { $gt: new Date() },
     });
 
     if (!user) {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     user.password = await bcrypt.hash(password, 12);
     user.passwordResetToken = undefined;
-    user.passwordResetExpiry = undefined;
+    user.passwordResetExpires = undefined;
     await user.save();
 
     return NextResponse.json({ message: "Password reset successfully. You can now log in." });
