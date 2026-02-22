@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { registerSchema } from "@/lib/validations/auth";
+import { sendVerificationEmail } from "@/lib/email/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,19 +25,25 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role: "customer",
       isEmailVerified: false,
       emailVerificationToken,
+      emailVerificationExpires,
       provider: "credentials",
     });
 
-    // TODO: Send verification email via Resend (SHAH-9 email step)
-    // await sendVerificationEmail({ name, email, token: emailVerificationToken });
+    try {
+      await sendVerificationEmail({ name, email, token: emailVerificationToken });
+    } catch (emailError) {
+      await User.deleteOne({ _id: user._id });
+      throw emailError;
+    }
 
     return NextResponse.json(
       { message: "Account created. Please check your email to verify." },

@@ -16,9 +16,13 @@ export async function GET(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
   }
+  if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+    return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+  }
 
   user.isEmailVerified = true;
   user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
   await user.save();
 
   return NextResponse.redirect(new URL("/login?verified=true", req.url));
