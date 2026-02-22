@@ -2,8 +2,8 @@
 
 import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";\nimport { useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Button, Input, Card, CardHeader, CardTitle, CardContent, Spinner } from "@/components/ui";
 
 // â”€â”€â”€ Inner form â€” uses useSearchParams so must be inside Suspense â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

@@ -11,6 +11,8 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { SessionProvider } from "@/components/shared/SessionProvider";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { siteConfig } from "@/config/site";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "../styles/tokens.css";
 import "./globals.css";
 
@@ -94,9 +96,12 @@ export const metadata: Metadata = {
 
 // ─── Root Layout ──────────────────────────────────────────────────────────────
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const dir = locale === "ar" ? "rtl" : "ltr";
   const fontVars = [
     playfair.variable,
     sourceSans.variable,
@@ -105,18 +110,20 @@ export default function RootLayout({
   ].join(" ");
 
   return (
-    <html lang="fr" suppressHydrationWarning className={fontVars}>
+    <html lang={locale} dir={dir} suppressHydrationWarning className={fontVars}>
       <body className="antialiased flex min-h-screen flex-col bg-[var(--color-bg)] text-[var(--color-text-primary)]">
-        <SessionProvider>
-          <ThemeProvider>
-            <SiteHeader />
-            <main className="flex-1 pb-16 md:pb-0">
-              {children}
-            </main>
-            <SiteFooter />
-            <MobileNav />
-          </ThemeProvider>
-        </SessionProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <SessionProvider>
+            <ThemeProvider>
+              <SiteHeader />
+              <main className="flex-1 pb-16 md:pb-0">
+                {children}
+              </main>
+              <SiteFooter />
+              <MobileNav />
+            </ThemeProvider>
+          </SessionProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 import { auth } from "./index";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 
 /**
  * Get current session in Server Components / Route Handlers.

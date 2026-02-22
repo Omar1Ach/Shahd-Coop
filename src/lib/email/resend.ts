@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { routing } from "@/i18n/routing";
 
 function getBaseUrl() {
   return (
@@ -45,7 +46,7 @@ export async function sendPasswordResetEmail(args: {
   const from = process.env.RESEND_FROM_EMAIL;
   if (!from) throw new Error("RESEND_FROM_EMAIL is not set");
 
-  const url = `${getBaseUrl()}/auth/reset-password?token=${args.token}`;
+  const url = `${getBaseUrl()}/${routing.defaultLocale}/auth/reset-password?token=${args.token}`;
   const resend = getResendClient();
 
   await resend.emails.send({

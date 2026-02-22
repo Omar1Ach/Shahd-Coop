@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
+import { routing } from "@/i18n/routing";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -25,6 +26,8 @@ export async function GET(req: NextRequest) {
   user.emailVerificationExpires = undefined;
   await user.save();
 
-  return NextResponse.redirect(new URL("/auth/login?verified=true", req.url));
+  return NextResponse.redirect(
+    new URL(`/${routing.defaultLocale}/auth/login?verified=true`, req.url)
+  );
 }
 
