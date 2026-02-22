@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { resetPasswordSchema } from "@/lib/validations/auth";
+import { hashToken } from "@/lib/utils/hash-token";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,8 +16,9 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const { token, password } = parsed.data;
 
+    // Hash the incoming token to compare against the stored hash
     const user = await User.findOne({
-      passwordResetToken: token,
+      passwordResetToken: hashToken(token),
       passwordResetExpires: { $gt: new Date() },
     });
 

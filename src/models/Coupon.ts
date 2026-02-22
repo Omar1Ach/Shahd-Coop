@@ -31,7 +31,17 @@ const CouponSchema = new Schema<ICoupon>(
       enum: ["percentage", "fixed", "free_shipping"],
       required: true,
     },
-    discountValue: { type: Number, required: true, min: 0 },
+    discountValue: {
+      type: Number,
+      required: true,
+      min: 0,
+      validate: {
+        validator(v: number) {
+          return (this as unknown as ICoupon).discountType !== "percentage" || v <= 100;
+        },
+        message: "Percentage discount cannot exceed 100",
+      },
+    },
     minOrderAmount: { type: Number, min: 0 },
     maxDiscountAmount: { type: Number, min: 0 },
     usageLimit: { type: Number, min: 1 },

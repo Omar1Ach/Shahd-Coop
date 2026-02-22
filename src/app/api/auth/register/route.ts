@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { registerSchema } from "@/lib/validations/auth";
 import { sendVerificationEmail } from "@/lib/email/resend";
+import { hashToken } from "@/lib/utils/hash-token";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,13 +19,18 @@ export async function POST(req: NextRequest) {
 
     const { name, email, password } = parsed.data;
 
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({ email }).select("_id").lean();
     if (existing) {
-      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+      // Return same message as success to prevent email enumeration
+      return NextResponse.json(
+        { message: "Account created. Please check your email to verify." },
+        { status: 201 }
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+    // Generate raw token for email, store only the hash in DB
+    const rawVerificationToken = crypto.randomBytes(32).toString("hex");
     const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const user = await User.create({
@@ -33,13 +39,13 @@ export async function POST(req: NextRequest) {
       password: hashedPassword,
       role: "customer",
       isEmailVerified: false,
-      emailVerificationToken,
+      emailVerificationToken: hashToken(rawVerificationToken),
       emailVerificationExpires,
       provider: "credentials",
     });
 
     try {
-      await sendVerificationEmail({ name, email, token: emailVerificationToken });
+      await sendVerificationEmail({ name, email, token: rawVerificationToken });
     } catch (emailError) {
       await User.deleteOne({ _id: user._id });
       throw emailError;

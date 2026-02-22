@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongoose";
-import { redis } from "@/lib/redis/client";
+import redis from "@/lib/redis/client";
 
 export async function GET() {
   try {
@@ -13,13 +13,10 @@ export async function GET() {
       redis: "connected",
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      {
-        status: "error",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
+      { status: "error", message: "Service unavailable" },
+      { status: 503 }
     );
   }
 }

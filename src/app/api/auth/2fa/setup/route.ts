@@ -27,5 +27,5 @@ export async function POST() {
   // Store secret temporarily in Redis (10 min) until confirmed
   await setOtp(session.user.id, secret);
 
-  return NextResponse.json({ secret, qrCode: qrCodeDataUrl });
+  return NextResponse.json({ qrCode: qrCodeDataUrl });
 }

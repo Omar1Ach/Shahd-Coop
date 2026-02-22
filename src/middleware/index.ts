@@ -84,20 +84,13 @@ export default async function middleware(req: NextRequest) {
   }
 
   const intlResponse = intlMiddleware(req);
-  const isRedirect =
-    intlResponse.headers.get("location") ||
-    intlResponse.headers.get("x-middleware-rewrite");
-  if (isRedirect) {
-    applySecurityHeaders(intlResponse);
-    return intlResponse;
-  }
 
   const { locale, pathname: normalizedPath } = stripLocale(pathname);
 
+  // For public paths, return the intl response as-is (preserving locale cookies/headers)
   if (isPublicPath(normalizedPath)) {
-    const res = NextResponse.next();
-    applySecurityHeaders(res);
-    return res;
+    applySecurityHeaders(intlResponse);
+    return intlResponse;
   }
 
   // Require auth for protected paths
@@ -130,8 +123,8 @@ export default async function middleware(req: NextRequest) {
     return res;
   }
 
-  const res = NextResponse.next();
-  applySecurityHeaders(res);
-  return res;
+  // Authenticated non-admin/non-member routes: return intl response with security headers
+  applySecurityHeaders(intlResponse);
+  return intlResponse;
 }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { routing } from "@/i18n/routing";
+import { hashToken } from "@/lib/utils/hash-token";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -12,12 +13,14 @@ export async function GET(req: NextRequest) {
   }
 
   await connectDB();
-  const user = await User.findOne({ emailVerificationToken: token });
+  // Hash the incoming token to compare against the stored hash
+  const hashedToken = hashToken(token);
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpires: { $gt: new Date() },
+  });
 
   if (!user) {
-    return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
-  }
-  if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
     return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
   }
 

@@ -5,15 +5,11 @@ import {
   JetBrains_Mono,
   Noto_Sans_Arabic,
 } from "next/font/google";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { MobileNav } from "@/components/layout/MobileNav";
 import { SessionProvider } from "@/components/shared/SessionProvider";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { siteConfig } from "@/config/site";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import "../styles/tokens.css";
 import "./globals.css";
 
 // ─── Font Loading ─────────────────────────────────────────────────────────────
@@ -110,17 +106,18 @@ export default async function RootLayout({
   ].join(" ");
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning className={fontVars}>
+    <html
+      lang={locale}
+      dir={dir}
+      suppressHydrationWarning
+      className={fontVars}
+      data-scroll-behavior="smooth"
+    >
       <body className="antialiased flex min-h-screen flex-col bg-[var(--color-bg)] text-[var(--color-text-primary)]">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SessionProvider>
             <ThemeProvider>
-              <SiteHeader />
-              <main className="flex-1 pb-16 md:pb-0">
-                {children}
-              </main>
-              <SiteFooter />
-              <MobileNav />
+              {children}
             </ThemeProvider>
           </SessionProvider>
         </NextIntlClientProvider>

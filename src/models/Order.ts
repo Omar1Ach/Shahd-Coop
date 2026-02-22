@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import type { OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
+import { getNextSequence } from "./Counter";
 
 export interface IOrderItem {
   product: mongoose.Types.ObjectId;
@@ -133,12 +134,11 @@ OrderSchema.index({ paymentStatus: 1 });
 OrderSchema.index({ stripePaymentIntentId: 1 }, { sparse: true });
 OrderSchema.index({ createdAt: -1 });
 
-// Auto-generate order number
-OrderSchema.pre("save", async function (next) {
-  if (!this.isNew) return next();
-  const count = await (this.constructor as Model<IOrder>).countDocuments();
-  this.orderNumber = `SC-${String(count + 1).padStart(6, "0")}`;
-  next();
+// Auto-generate order number using atomic counter
+OrderSchema.pre("save", async function () {
+  if (!this.isNew) return;
+  const seq = await getNextSequence("orderNumber");
+  this.orderNumber = `SC-${String(seq).padStart(6, "0")}`;
 });
 
 const Order: Model<IOrder> =
