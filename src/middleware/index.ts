@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { apiRateLimit, authRateLimit, checkoutRateLimit, checkRateLimit } from "@/lib/redis/rate-limit";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -27,9 +28,30 @@ function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
 
-export default auth(function middleware(req: NextRequest & { auth: unknown }) {
+function getIdentifier(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return req.ip ?? "unknown";
+}
+
+export default auth(async function middleware(req: NextRequest & { auth: unknown }) {
   const { pathname } = req.nextUrl;
   const session = (req as { auth?: { user?: { role?: string } } }).auth;
+
+  if (pathname.startsWith("/api/")) {
+    const id = getIdentifier(req);
+    const limiter = pathname.startsWith("/api/auth")
+      ? authRateLimit
+      : pathname.startsWith("/api/checkout")
+        ? checkoutRateLimit
+        : apiRateLimit;
+
+    const result = await checkRateLimit(limiter, id);
+    if (!result.success) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+    return NextResponse.next();
+  }
 
   // Allow public paths
   if (isPublicPath(pathname)) return NextResponse.next();
