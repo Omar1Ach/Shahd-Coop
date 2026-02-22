@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth";
 import { apiRateLimit, authRateLimit, checkoutRateLimit, checkRateLimit } from "@/lib/redis/rate-limit";
+import { routing } from "@/i18n/routing";
+import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -29,6 +31,18 @@ function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
 
+function stripLocale(pathname: string) {
+  for (const locale of routing.locales) {
+    if (pathname === `/${locale}`) {
+      return { locale, pathname: "/" };
+    }
+    if (pathname.startsWith(`/${locale}/`)) {
+      return { locale, pathname: pathname.slice(locale.length + 1) };
+    }
+  }
+  return { locale: routing.defaultLocale, pathname };
+}
+
 function getIdentifier(req: NextRequest): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
@@ -45,13 +59,7 @@ function applySecurityHeaders(res: NextResponse) {
   }
 }
 
-function applyLocaleCookie(req: NextRequest, res: NextResponse) {
-  if (req.cookies.get("locale")) return;
-  const header = req.headers.get("accept-language") ?? "";
-  const preferred = header.split(",")[0]?.trim().slice(0, 2) ?? "fr";
-  const locale = ["fr", "ar", "en"].includes(preferred) ? preferred : "fr";
-  res.cookies.set("locale", locale, { path: "/" });
-}
+const intlMiddleware = createIntlMiddleware(routing);
 
 export default auth(async function middleware(req: NextRequest & { auth: unknown }) {
   const { pathname } = req.nextUrl;
@@ -76,20 +84,28 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return res;
   }
 
-  // Allow public paths
-  if (isPublicPath(pathname)) {
+  const intlResponse = intlMiddleware(req);
+  const isRedirect =
+    intlResponse.headers.get("location") ||
+    intlResponse.headers.get("x-middleware-rewrite");
+  if (isRedirect) {
+    applySecurityHeaders(intlResponse);
+    return intlResponse;
+  }
+
+  const { locale, pathname: normalizedPath } = stripLocale(pathname);
+
+  if (isPublicPath(normalizedPath)) {
     const res = NextResponse.next();
-    applyLocaleCookie(req, res);
     applySecurityHeaders(res);
     return res;
   }
 
   // Require auth for protected paths
   if (!session?.user) {
-    const loginUrl = new URL("/auth/login", req.url);
+    const loginUrl = new URL(`/${locale}/auth/login`, req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     const res = NextResponse.redirect(loginUrl);
-    applyLocaleCookie(req, res);
     applySecurityHeaders(res);
     return res;
   }
@@ -97,23 +113,20 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
   const role = session.user.role;
 
   // Admin-only routes
-  if (pathname.startsWith("/admin") && role !== "admin") {
-    const res = NextResponse.redirect(new URL("/", req.url));
-    applyLocaleCookie(req, res);
+  if (normalizedPath.startsWith("/admin") && role !== "admin") {
+    const res = NextResponse.redirect(new URL(`/${locale}`, req.url));
     applySecurityHeaders(res);
     return res;
   }
 
   // Member routes (member or admin)
-  if (pathname.startsWith("/member") && role !== "member" && role !== "admin") {
-    const res = NextResponse.redirect(new URL("/", req.url));
-    applyLocaleCookie(req, res);
+  if (normalizedPath.startsWith("/member") && role !== "member" && role !== "admin") {
+    const res = NextResponse.redirect(new URL(`/${locale}`, req.url));
     applySecurityHeaders(res);
     return res;
   }
 
   const res = NextResponse.next();
-  applyLocaleCookie(req, res);
   applySecurityHeaders(res);
   return res;
 });

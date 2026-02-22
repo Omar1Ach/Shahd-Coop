@@ -1,0 +1,35 @@
+{
+    "common":  {
+                   "appName":  "ShahdCoop",
+                   "signIn":  "Se connecter",
+                   "register":  "S\u0027inscrire",
+                   "products":  "Produits",
+                   "categories":  "Catégories",
+                   "blog":  "Blog",
+                   "about":  "À propos",
+                   "contact":  "Contact",
+                   "home":  "Accueil",
+                   "search":  "Recherche",
+                   "cart":  "Panier",
+                   "account":  "Compte",
+                   "shop":  "Boutique",
+                   "company":  "Entreprise",
+                   "accountSection":  "Compte",
+                   "allProducts":  "Tous les produits",
+                   "myOrders":  "Mes commandes",
+                   "wishlist":  "Liste de souhaits",
+                   "privacyPolicy":  "Politique de confidentialité",
+                   "terms":  "Conditions d\u0027utilisation",
+                   "faq":  "FAQ",
+                   "signOut":  "Se déconnecter"
+               },
+    "home":  {
+                 "kicker":  "Coopérative apicole marocaine",
+                 "title":  "Miel pur",
+                 "titleAccent":  "Directement de la ruche",
+                 "description":  "ShahdCoop vous relie directement aux apiculteurs coopératifs du Maroc. Chaque pot raconte des traditions apicoles ancestrales et des paysages naturels préservés.",
+                 "ctaShop":  "Acheter du miel",
+                 "ctaStory":  "Notre histoire",
+                 "sprint":  "Sprint 1 — Fondations \u0026 infrastructure en cours"
+             }
+}
