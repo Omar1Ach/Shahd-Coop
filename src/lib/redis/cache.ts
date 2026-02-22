@@ -1,8 +1,12 @@
 import redis from "./client";
 
-const DEFAULT_TTL = 60 * 5; // 5 minutes
+// ─── TTL constants ────────────────────────────────────────────────────────────
+const DEFAULT_TTL = 60 * 5; // 5 min
+export const CART_TTL = 60 * 60 * 24 * 7; // 7 days
+export const OTP_TTL = 60 * 10; // 10 min
+export const CATEGORY_KEY = "shahd:categories";
 
-// ─── Generic cache helpers ──────────────────────────────────────────────────
+// ─── Generic helpers ──────────────────────────────────────────────────────────
 
 export async function getCache<T>(key: string): Promise<T | null> {
   const data = await redis.get<T>(key);
@@ -21,6 +25,11 @@ export async function deleteCache(key: string): Promise<void> {
   await redis.del(key);
 }
 
+/**
+ * Delete multiple keys matching a pattern.
+ * NOTE: redis.keys() is O(N) — only use in admin/low-traffic paths.
+ * For high-traffic invalidation, prefer explicit key deletion.
+ */
 export async function deleteCacheByPattern(pattern: string): Promise<void> {
   const keys = await redis.keys(pattern);
   if (keys.length > 0) {
@@ -28,11 +37,9 @@ export async function deleteCacheByPattern(pattern: string): Promise<void> {
   }
 }
 
-// ─── Cart cache ─────────────────────────────────────────────────────────────
+// ─── Cart cache ───────────────────────────────────────────────────────────────
 
-export const CART_TTL = 60 * 60 * 24 * 7; // 7 days
-
-export function cartKey(userId: string) {
+export function cartKey(userId: string): string {
   return `shahd:cart:${userId}`;
 }
 
@@ -48,13 +55,13 @@ export async function deleteCart(userId: string): Promise<void> {
   await deleteCache(cartKey(userId));
 }
 
-// ─── Product cache ───────────────────────────────────────────────────────────
+// ─── Product cache ────────────────────────────────────────────────────────────
 
-export function productKey(slug: string) {
+export function productKey(slug: string): string {
   return `shahd:product:${slug}`;
 }
 
-export function productListKey(page: number, filter: string) {
+export function productListKey(page: number, filter: string): string {
   return `shahd:products:${page}:${filter}`;
 }
 
@@ -63,19 +70,15 @@ export async function invalidateProductCache(slug: string): Promise<void> {
   await deleteCacheByPattern("shahd:products:*");
 }
 
-// ─── Category cache ──────────────────────────────────────────────────────────
-
-export const CATEGORY_KEY = "shahd:categories";
+// ─── Category cache ───────────────────────────────────────────────────────────
 
 export async function invalidateCategoryCache(): Promise<void> {
   await deleteCache(CATEGORY_KEY);
 }
 
-// ─── Session / OTP ───────────────────────────────────────────────────────────
+// ─── OTP / 2FA cache ──────────────────────────────────────────────────────────
 
-export const OTP_TTL = 60 * 10; // 10 minutes
-
-export function otpKey(userId: string) {
+export function otpKey(userId: string): string {
   return `shahd:otp:${userId}`;
 }
 
