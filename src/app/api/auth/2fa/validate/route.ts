@@ -1,34 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { verifyTotp, verifyBackupCode } from "@/lib/auth/totp";
 
-// Called during login flow when 2FA is required
+/**
+ * POST /api/auth/2fa/validate
+ * Called during the login flow when user has 2FA enabled.
+ * Requires an active session (partial — user authenticated but 2FA pending).
+ * Guards against IDOR by using session.user.id, not body.userId.
+ */
 export async function POST(req: NextRequest) {
-  const { userId, token, isBackupCode } = await req.json();
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  if (!userId || !token) {
-    return NextResponse.json({ error: "userId and token required" }, { status: 400 });
+  const body = await req.json();
+  const token: string | undefined = body?.token;
+  const isBackupCode: boolean = body?.isBackupCode === true;
+
+  if (!token) {
+    return NextResponse.json({ error: "token is required" }, { status: 400 });
   }
 
   await connectDB();
-  const user = await User.findById(userId).select("twoFactorEnabled twoFactorSecret backupCodes");
+  const user = await User.findById(session.user.id).select(
+    "+twoFactorSecret +twoFactorBackupCodes twoFactorEnabled"
+  );
 
   if (!user || !user.twoFactorEnabled) {
-    return NextResponse.json({ error: "2FA not enabled for this user" }, { status: 400 });
+    return NextResponse.json({ error: "2FA not enabled" }, { status: 400 });
   }
 
   if (isBackupCode) {
-    const matchIndex = user.backupCodes?.findIndex((hashed: string) =>
-      verifyBackupCode(token, hashed)
+    const codes: { code: string; usedAt?: Date }[] =
+      user.twoFactorBackupCodes ?? [];
+
+    const matchIndex = codes.findIndex(
+      (entry) => !entry.usedAt && verifyBackupCode(token, entry.code)
     );
 
-    if (matchIndex === undefined || matchIndex === -1) {
-      return NextResponse.json({ error: "Invalid backup code" }, { status: 400 });
+    if (matchIndex === -1) {
+      return NextResponse.json(
+        { error: "Invalid or already used backup code" },
+        { status: 400 }
+      );
     }
 
-    // Remove used backup code (one-time use)
-    user.backupCodes!.splice(matchIndex, 1);
+    // Mark code as used (soft-delete preserves audit trail)
+    codes[matchIndex].usedAt = new Date();
+    user.twoFactorBackupCodes = codes;
     await user.save();
 
     return NextResponse.json({ valid: true });
