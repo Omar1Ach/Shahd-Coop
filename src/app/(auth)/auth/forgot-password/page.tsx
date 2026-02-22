@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="text-center text-sm text-[var(--color-text-secondary)]">
               <p>If that email exists, a reset link has been sent.</p>
-              <Link href="/login" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
+              <Link href="/auth/login" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
                 Back to Sign In
               </Link>
             </div>
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
                 </Button>
               </form>
               <p className="mt-4 text-center text-sm text-[var(--color-text-muted)]">
-                <Link href="/login" className="text-[var(--color-primary)] hover:underline">
+                <Link href="/auth/login" className="text-[var(--color-primary)] hover:underline">
                   Back to Sign In
                 </Link>
               </p>
@@ -76,3 +76,4 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
+

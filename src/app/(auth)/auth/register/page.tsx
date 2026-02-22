@@ -72,7 +72,7 @@ export default function RegisterPage() {
               Please click it to activate your account.
             </p>
             <div className="mt-6">
-              <Link href="/login" className="text-[var(--color-primary)] hover:underline text-sm">
+              <Link href="/auth/login" className="text-[var(--color-primary)] hover:underline text-sm">
                 Back to Sign In
               </Link>
             </div>
@@ -142,7 +142,7 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
             Already have an account?{" "}
-            <Link href="/login" className="text-[var(--color-primary)] hover:underline">
+            <Link href="/auth/login" className="text-[var(--color-primary)] hover:underline">
               Sign in
             </Link>
           </p>
@@ -151,3 +151,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

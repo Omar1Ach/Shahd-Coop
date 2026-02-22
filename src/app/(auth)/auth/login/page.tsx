@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Input, Card, CardHeader, CardTitle, CardContent, Spinner } from "@/components/ui";
 
-// ─── Inner form — uses useSearchParams so must be inside Suspense ─────────────
+// â”€â”€â”€ Inner form â€” uses useSearchParams so must be inside Suspense â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function LoginForm() {
   const router = useRouter();
@@ -95,7 +95,7 @@ function LoginForm() {
               />
               <div className="text-right">
                 <Link
-                  href="/forgot-password"
+                  href="/auth/forgot-password"
                   className="text-sm text-[var(--color-primary)] hover:underline"
                 >
                   Forgot password?
@@ -137,7 +137,7 @@ function LoginForm() {
 
         <p className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-[var(--color-primary)] hover:underline">
+          <Link href="/auth/register" className="text-[var(--color-primary)] hover:underline">
             Register
           </Link>
         </p>
@@ -146,7 +146,7 @@ function LoginForm() {
   );
 }
 
-// ─── Page — wraps form in Suspense (required for useSearchParams in Next.js 15) ──
+// â”€â”€â”€ Page â€” wraps form in Suspense (required for useSearchParams in Next.js 15) â”€â”€
 
 export default function LoginPage() {
   return (
@@ -157,3 +157,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

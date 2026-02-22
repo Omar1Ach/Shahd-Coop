@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button, Badge } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
 
-// ─── Nav links ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Nav links â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const navLinks = [
   { href: "/products", label: "Products" },
@@ -16,7 +16,7 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function SiteHeader() {
   const { data: session } = useSession();
@@ -91,10 +91,10 @@ export function SiteHeader() {
             </div>
           ) : (
             <div className="hidden items-center gap-2 md:flex">
-              <Link href="/login">
+              <Link href="/auth/login">
                 <Button variant="ghost" size="sm">Sign In</Button>
               </Link>
-              <Link href="/register">
+              <Link href="/auth/register">
                 <Button size="sm">Register</Button>
               </Link>
             </div>
@@ -162,10 +162,10 @@ export function SiteHeader() {
             </>
           ) : (
             <div className="flex gap-2">
-              <Link href="/login" onClick={() => setMobileOpen(false)} className="flex-1">
+              <Link href="/auth/login" onClick={() => setMobileOpen(false)} className="flex-1">
                 <Button variant="outline" size="sm" fullWidth>Sign In</Button>
               </Link>
-              <Link href="/register" onClick={() => setMobileOpen(false)} className="flex-1">
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="flex-1">
                 <Button size="sm" fullWidth>Register</Button>
               </Link>
             </div>
@@ -175,3 +175,4 @@ export function SiteHeader() {
     </header>
   );
 }
+

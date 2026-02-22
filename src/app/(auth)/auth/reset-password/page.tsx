@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Input, Card, CardHeader, CardTitle, CardContent, Spinner } from "@/components/ui";
 
-// ─── Inner form — uses useSearchParams so must be inside Suspense ─────────────
+// â”€â”€â”€ Inner form â€” uses useSearchParams so must be inside Suspense â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -25,7 +25,7 @@ function ResetPasswordForm() {
             Invalid or missing reset token. Please request a new password reset.
           </p>
           <div className="mt-4 text-center">
-            <Link href="/forgot-password" className="text-[var(--color-primary)] hover:underline text-sm">
+            <Link href="/auth/forgot-password" className="text-[var(--color-primary)] hover:underline text-sm">
               Request new link
             </Link>
           </div>
@@ -63,7 +63,7 @@ function ResetPasswordForm() {
       return;
     }
 
-    router.push("/login?reset=true");
+    router.push("/auth/login?reset=true");
   }
 
   return (
@@ -101,7 +101,7 @@ function ResetPasswordForm() {
           </Button>
         </form>
         <p className="mt-4 text-center text-sm">
-          <Link href="/login" className="text-[var(--color-primary)] hover:underline">
+          <Link href="/auth/login" className="text-[var(--color-primary)] hover:underline">
             Back to Sign In
           </Link>
         </p>
@@ -110,7 +110,7 @@ function ResetPasswordForm() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function ResetPasswordPage() {
   return (
@@ -121,3 +121,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

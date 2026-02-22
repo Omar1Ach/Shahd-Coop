@@ -45,7 +45,7 @@ export async function sendPasswordResetEmail(args: {
   const from = process.env.RESEND_FROM_EMAIL;
   if (!from) throw new Error("RESEND_FROM_EMAIL is not set");
 
-  const url = `${getBaseUrl()}/reset-password?token=${args.token}`;
+  const url = `${getBaseUrl()}/auth/reset-password?token=${args.token}`;
   const resend = getResendClient();
 
   await resend.emails.send({
@@ -56,3 +56,4 @@ export async function sendPasswordResetEmail(args: {
     html: `<p>Hi ${args.name},</p><p>Reset your password:</p><p><a href="${url}">${url}</a></p>`,
   });
 }
+

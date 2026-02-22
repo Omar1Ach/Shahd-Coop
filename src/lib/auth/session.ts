@@ -14,7 +14,7 @@ export async function getSession() {
  */
 export async function requireAuth() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/auth/login");
   return session.user;
 }
 
@@ -39,8 +39,9 @@ export async function requireAdmin() {
  */
 export async function requireMember() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/auth/login");
   const role = session.user.role;
   if (role !== "member" && role !== "admin") redirect("/");
   return session.user;
 }
+

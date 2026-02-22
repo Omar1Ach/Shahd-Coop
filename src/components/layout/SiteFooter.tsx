@@ -8,7 +8,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div>
             <h3 className="text-lg font-bold" style={{ color: "var(--color-primary)", fontFamily: "var(--font-display)" }}>
-              🍯 ShahdCoop
+              ðŸ¯ ShahdCoop
             </h3>
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
               Premium natural honey &amp; bee products, sourced from cooperative farms.
@@ -58,8 +58,8 @@ export function SiteFooter() {
             <h4 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">Account</h4>
             <ul className="mt-3 flex flex-col gap-2">
               {[
-                { href: "/login", label: "Sign In" },
-                { href: "/register", label: "Register" },
+                { href: "/auth/login", label: "Sign In" },
+                { href: "/auth/register", label: "Register" },
                 { href: "/account/orders", label: "My Orders" },
                 { href: "/account/wishlist", label: "Wishlist" },
               ].map((l) => (
@@ -75,7 +75,7 @@ export function SiteFooter() {
 
         <div className="mt-10 border-t border-[var(--color-border)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-text-muted)]">
-            © {new Date().getFullYear()} ShahdCoop. All rights reserved.
+            Â© {new Date().getFullYear()} ShahdCoop. All rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-[var(--color-text-muted)]">
             <Link href="/privacy" className="hover:text-[var(--color-primary)]">Privacy Policy</Link>
@@ -86,3 +86,4 @@ export function SiteFooter() {
     </footer>
   );
 }
+

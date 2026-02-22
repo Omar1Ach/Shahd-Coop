@@ -25,5 +25,6 @@ export async function GET(req: NextRequest) {
   user.emailVerificationExpires = undefined;
   await user.save();
 
-  return NextResponse.redirect(new URL("/login?verified=true", req.url));
+  return NextResponse.redirect(new URL("/auth/login?verified=true", req.url));
 }
+
