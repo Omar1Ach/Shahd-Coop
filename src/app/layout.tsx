@@ -5,10 +5,16 @@ import {
   JetBrains_Mono,
   Noto_Sans_Arabic,
 } from "next/font/google";
-import "./globals.css";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { MobileNav } from "@/components/layout/MobileNav";
+import { SessionProvider } from "@/components/shared/SessionProvider";
+import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { siteConfig } from "@/config/site";
+import "../styles/tokens.css";
+import "./globals.css";
 
-// ─── Font Loading ─────────────────────────────────────────────
+// ─── Font Loading ─────────────────────────────────────────────────────────────
 // next/font automatically self-hosts and optimises fonts.
 // Each font is loaded once, tree-shaken, and inlined as CSS vars.
 
@@ -40,17 +46,19 @@ const notoArabic = Noto_Sans_Arabic({
   display: "swap",
 });
 
-// ─── Viewport ────────────────────────────────────────────────
+// ─── Viewport ─────────────────────────────────────────────────────────────────
+
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#F9F7F4" },
-    { media: "(prefers-color-scheme: dark)",  color: "#1A1714" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1714" },
   ],
   width: "device-width",
   initialScale: 1,
 };
 
-// ─── Metadata ────────────────────────────────────────────────
+// ─── Metadata ─────────────────────────────────────────────────────────────────
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -58,7 +66,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: ["honey", "natural", "organic", "bee products", "cooperative", "Morocco", "Maroc"],
+  keywords: ["honey", "natural", "organic", "bee products", "cooperative", "Morocco"],
   authors: [{ name: "ShahdCoop" }],
   creator: "ShahdCoop",
   openGraph: {
@@ -84,7 +92,8 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── Root Layout ─────────────────────────────────────────────
+// ─── Root Layout ──────────────────────────────────────────────────────────────
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -96,9 +105,18 @@ export default function RootLayout({
   ].join(" ");
 
   return (
-    <html lang="fr" suppressHydrationWarning>
-      <body className={`${fontVars} antialiased`}>
-        {children}
+    <html lang="fr" suppressHydrationWarning className={fontVars}>
+      <body className="antialiased flex min-h-screen flex-col bg-[var(--color-bg)] text-[var(--color-text-primary)]">
+        <SessionProvider>
+          <ThemeProvider>
+            <SiteHeader />
+            <main className="flex-1 pb-16 md:pb-0">
+              {children}
+            </main>
+            <SiteFooter />
+            <MobileNav />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
