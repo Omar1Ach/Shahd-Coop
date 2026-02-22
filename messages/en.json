@@ -1,35 +1,35 @@
 {
-    "common":  {
-                   "appName":  "ShahdCoop",
-                   "signIn":  "Sign in",
-                   "register":  "Register",
-                   "products":  "Products",
-                   "categories":  "Categories",
-                   "blog":  "Blog",
-                   "about":  "About",
-                   "contact":  "Contact",
-                   "home":  "Home",
-                   "search":  "Search",
-                   "cart":  "Cart",
-                   "account":  "Account",
-                   "shop":  "Shop",
-                   "company":  "Company",
-                   "accountSection":  "Account",
-                   "allProducts":  "All products",
-                   "myOrders":  "My orders",
-                   "wishlist":  "Wishlist",
-                   "privacyPolicy":  "Privacy policy",
-                   "terms":  "Terms of service",
-                   "faq":  "FAQ",
-                   "signOut":  "Sign out"
-               },
-    "home":  {
-                 "kicker":  "Moroccan beekeeping cooperative",
-                 "title":  "Pure honey",
-                 "titleAccent":  "Direct from the hive",
-                 "description":  "ShahdCoop connects you directly with cooperative beekeepers across Morocco. Every jar tells the story of ancient beekeeping traditions and pristine natural landscapes.",
-                 "ctaShop":  "Shop honey",
-                 "ctaStory":  "Our story",
-                 "sprint":  "Sprint 1 — Foundation \u0026 Infrastructure in progress"
-             }
+  "common": {
+    "appName": "ShahdCoop",
+    "signIn": "Sign in",
+    "register": "Register",
+    "products": "Products",
+    "categories": "Categories",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "home": "Home",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "Account",
+    "shop": "Shop",
+    "company": "Company",
+    "accountSection": "Account",
+    "allProducts": "All products",
+    "myOrders": "My orders",
+    "wishlist": "Wishlist",
+    "privacyPolicy": "Privacy policy",
+    "terms": "Terms of service",
+    "faq": "FAQ",
+    "signOut": "Sign out"
+  },
+  "home": {
+    "kicker": "Moroccan beekeeping cooperative",
+    "title": "Pure honey",
+    "titleAccent": "Direct from the hive",
+    "description": "ShahdCoop connects you directly with cooperative beekeepers across Morocco. Every jar tells the story of ancient beekeeping traditions and pristine natural landscapes.",
+    "ctaShop": "Shop honey",
+    "ctaStory": "Our story",
+    "sprint": "Sprint 1 â€” Foundation & Infrastructure in progress"
+  }
 }

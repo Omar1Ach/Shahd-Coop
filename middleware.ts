@@ -3,4 +3,8 @@
 // Auth guard + role-based route protection
 // ─────────────────────────────────────────────────────────────────────────────
 
-export { default, config } from "@/middleware/index";
+export { default } from "@/middleware/index";
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+};

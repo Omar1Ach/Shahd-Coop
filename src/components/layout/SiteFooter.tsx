@@ -74,7 +74,7 @@ export async function SiteFooter() {
 
         <div className="mt-10 border-t border-[var(--color-border)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-text-muted)]">
-            © {new Date().getFullYear()} ShahdCoop. All rights reserved.
+            Â© {new Date().getFullYear()} ShahdCoop. All rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-[var(--color-text-muted)]">
             <Link href="/privacy" className="hover:text-[var(--color-primary)]">{t("privacyPolicy")}</Link>
