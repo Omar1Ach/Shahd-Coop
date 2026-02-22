@@ -3,10 +3,11 @@
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { Button, Badge } from "@/components/ui";
 import { cn } from "@/lib/utils/cn";
+import { useTheme } from "@/components/shared/ThemeProvider";
 
 const navLinks = [
   { href: "/products", key: "products" },
@@ -21,43 +22,46 @@ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = useTranslations("common");
   const locale = useLocale();
+  const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b"
-      style={{
-        background: "var(--color-surface-1)",
-        borderColor: "var(--color-border)",
-      }}
-    >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-xl font-bold"
-          style={{ color: "var(--color-primary)", fontFamily: "var(--font-display)" }}
-        >
-          {t("appName")}
+    <header className="ds-header">
+      <div className="ds-header-inner">
+        <Link href="/" className="ds-logo">
+          <span>shahd</span>coop
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="ds-nav">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium transition-colors hover:text-[var(--color-primary)]"
-              style={{ color: "var(--color-text-secondary)" }}
+              className={cn(isActive(link.href) && "active")}
             >
               {t(link.key)}
             </Link>
           ))}
+          <button
+            className="ds-theme-toggle"
+            type="button"
+            aria-label="Toggle theme"
+            onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79z"/>
+            </svg>
+          </button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-3 md:flex">
+          <div className="flex items-center gap-2">
             {routing.locales.map((l) => (
               <Link
                 key={l}
-                href={"/"}
+                href="/"
                 locale={l}
                 className={cn(
                   "text-xs uppercase tracking-widest",
@@ -68,6 +72,7 @@ export function SiteHeader() {
               </Link>
             ))}
           </div>
+
           <Link
             href="/cart"
             className="transition-colors hover:text-[var(--color-primary)]"
@@ -86,7 +91,7 @@ export function SiteHeader() {
           </Link>
 
           {session ? (
-            <div className="hidden items-center gap-2 md:flex">
+            <div className="flex items-center gap-2">
               <Link href="/account/profile">
                 <Badge variant="outline" className="cursor-pointer">
                   {session.user?.name?.split(" ")[0] ?? t("account")}
@@ -101,7 +106,7 @@ export function SiteHeader() {
               </Button>
             </div>
           ) : (
-            <div className="hidden items-center gap-2 md:flex">
+            <div className="flex items-center gap-2">
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">{t("signIn")}</Button>
               </Link>
@@ -110,21 +115,21 @@ export function SiteHeader() {
               </Link>
             </div>
           )}
-
-          <button
-            className="rounded-md p-2 transition-colors hover:bg-[var(--color-surface-2)] md:hidden"
-            style={{ color: "var(--color-text-secondary)" }}
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            )}
-          </button>
         </div>
+
+        <button
+          className="rounded-md p-2 transition-colors hover:bg-[var(--color-surface-2)] md:hidden"
+          style={{ color: "var(--color-text-secondary)" }}
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          )}
+        </button>
       </div>
 
       <div

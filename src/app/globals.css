@@ -114,12 +114,117 @@
     scroll-behavior: smooth;
   }
 
-  body {
-    background: var(--bg);
-    color: var(--txt-p);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+body {
+  background: var(--bg);
+  color: var(--txt-p);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.ds-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(249, 247, 244, 0.85);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--stone-200);
+  transition: background 0.3s ease;
+}
+.dark .ds-header {
+  background: rgba(26, 23, 20, 0.88);
+  border-color: #3A342B;
+}
+.ds-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.ds-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--honey-700);
+  letter-spacing: -0.02em;
+}
+.ds-logo span {
+  color: var(--stone-800);
+}
+.dark .ds-logo {
+  color: var(--honey-400);
+}
+.dark .ds-logo span {
+  color: #F0ECE6;
+}
+.ds-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.ds-nav a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--stone-600);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+.ds-nav a:hover {
+  color: var(--stone-900);
+  background: var(--stone-100);
+}
+.ds-nav a.active {
+  color: var(--honey-700);
+  background: var(--honey-50);
+}
+.dark .ds-nav a {
+  color: #B5AA99;
+}
+.dark .ds-nav a:hover {
+  color: #F0ECE6;
+  background: #2E2A22;
+}
+.dark .ds-nav a.active {
+  color: var(--honey-400);
+  background: rgba(255, 162, 56, 0.1);
+}
+.ds-theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid var(--stone-200);
+  background: var(--stone-0);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+.ds-theme-toggle:hover {
+  border-color: var(--stone-300);
+  background: var(--stone-50);
+}
+.dark .ds-theme-toggle {
+  border-color: #4D453A;
+  background: #242019;
+}
+.ds-footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--stone-200);
+  text-align: center;
+  color: var(--stone-400);
+  font-size: 0.875rem;
+}
+.dark .ds-footer {
+  border-color: #3A342B;
+  color: #7B6E5E;
+}
 
   /* Focus ring — accessible, on-brand */
   *:focus-visible {
