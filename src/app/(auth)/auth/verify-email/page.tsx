@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -26,7 +26,7 @@ export default function VerifyEmailPage() {
                 </svg>
               </div>
               <p className="mt-3 text-[var(--color-text-secondary)]">Your email has been verified successfully.</p>
-              <Link href="/login" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
+              <Link href="/auth/login" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
                 Sign in now -&gt;
               </Link>
             </>
@@ -42,7 +42,7 @@ export default function VerifyEmailPage() {
                 </svg>
               </div>
               <p className="mt-3 text-[var(--color-text-secondary)]">Invalid or expired verification link.</p>
-              <Link href="/register" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
+              <Link href="/auth/register" className="mt-4 inline-block text-[var(--color-primary)] hover:underline">
                 Register again -&gt;
               </Link>
             </>
@@ -67,3 +67,4 @@ export default function VerifyEmailPage() {
     </div>
   );
 }
+

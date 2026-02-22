@@ -84,9 +84,9 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   pages: {
-    signIn: "/login",
-    error: "/login",
-    verifyRequest: "/verify-email",
+    signIn: "/auth/login",
+    error: "/auth/login",
+    verifyRequest: "/auth/verify-email",
   },
   callbacks: {
     async signIn({ user, account }) {
@@ -107,7 +107,7 @@ export const authConfig: NextAuthConfig = {
       return true;
     },
     async jwt({ token, user, trigger }) {
-      // Only set role on initial sign-in or explicit update — not on every request
+      // Only set role on initial sign-in or explicit update â€” not on every request
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role ?? "customer";
@@ -134,3 +134,4 @@ export const authConfig: NextAuthConfig = {
   session: { strategy: "jwt" },
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 };
+

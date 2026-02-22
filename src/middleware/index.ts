@@ -5,11 +5,12 @@ import type { NextRequest } from "next/server";
 
 const PUBLIC_PATHS = [
   "/",
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/verify-email",
+  "/auth/login",
+  "/auth/register",
+  "/auth/forgot-password",
+  "/auth/reset-password",
+  "/auth/verify-email",
+  "/auth/2fa",
   "/about",
   "/contact",
   "/faq",
@@ -34,6 +35,24 @@ function getIdentifier(req: NextRequest): string {
   return req.ip ?? "unknown";
 }
 
+function applySecurityHeaders(res: NextResponse) {
+  res.headers.set("X-Frame-Options", "DENY");
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (process.env.NODE_ENV === "production") {
+    res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  }
+}
+
+function applyLocaleCookie(req: NextRequest, res: NextResponse) {
+  if (req.cookies.get("locale")) return;
+  const header = req.headers.get("accept-language") ?? "";
+  const preferred = header.split(",")[0]?.trim().slice(0, 2) ?? "fr";
+  const locale = ["fr", "ar", "en"].includes(preferred) ? preferred : "fr";
+  res.cookies.set("locale", locale, { path: "/" });
+}
+
 export default auth(async function middleware(req: NextRequest & { auth: unknown }) {
   const { pathname } = req.nextUrl;
   const session = (req as { auth?: { user?: { role?: string } } }).auth;
@@ -48,36 +67,58 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
 
     const result = await checkRateLimit(limiter, id);
     if (!result.success) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      const res = NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      applySecurityHeaders(res);
+      return res;
     }
-    return NextResponse.next();
+    const res = NextResponse.next();
+    applySecurityHeaders(res);
+    return res;
   }
 
   // Allow public paths
-  if (isPublicPath(pathname)) return NextResponse.next();
+  if (isPublicPath(pathname)) {
+    const res = NextResponse.next();
+    applyLocaleCookie(req, res);
+    applySecurityHeaders(res);
+    return res;
+  }
 
   // Require auth for protected paths
   if (!session?.user) {
-    const loginUrl = new URL("/login", req.url);
+    const loginUrl = new URL("/auth/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+    const res = NextResponse.redirect(loginUrl);
+    applyLocaleCookie(req, res);
+    applySecurityHeaders(res);
+    return res;
   }
 
   const role = session.user.role;
 
   // Admin-only routes
   if (pathname.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
+    const res = NextResponse.redirect(new URL("/", req.url));
+    applyLocaleCookie(req, res);
+    applySecurityHeaders(res);
+    return res;
   }
 
   // Member routes (member or admin)
   if (pathname.startsWith("/member") && role !== "member" && role !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
+    const res = NextResponse.redirect(new URL("/", req.url));
+    applyLocaleCookie(req, res);
+    applySecurityHeaders(res);
+    return res;
   }
 
-  return NextResponse.next();
+  const res = NextResponse.next();
+  applyLocaleCookie(req, res);
+  applySecurityHeaders(res);
+  return res;
 });
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };
+
