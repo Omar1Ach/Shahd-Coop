@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
+import { sendPasswordResetEmail } from "@/lib/email/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,11 +23,17 @@ export async function POST(req: NextRequest) {
 
     const token = crypto.randomBytes(32).toString("hex");
     user.passwordResetToken = token;
-    user.passwordResetExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await user.save();
 
-    // TODO: Send reset email via Resend
-    // await sendPasswordResetEmail({ name: user.name, email: user.email, token });
+    try {
+      await sendPasswordResetEmail({ name: user.name, email: user.email, token });
+    } catch (emailError) {
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+      throw emailError;
+    }
 
     return NextResponse.json({ message: "If that email exists, a reset link has been sent." });
   } catch (err) {

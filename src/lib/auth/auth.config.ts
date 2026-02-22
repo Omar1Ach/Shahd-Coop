@@ -6,12 +6,20 @@ import { connectDB } from "@/lib/db/mongoose";
 import { User } from "@/models";
 import { loginSchema } from "@/lib/validations/auth";
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID || process.env.AUTH_GOOGLE_ID;
+const googleClientSecret =
+  process.env.GOOGLE_CLIENT_SECRET || process.env.AUTH_GOOGLE_SECRET;
+
 export const authConfig: NextAuthConfig = {
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    ...(googleClientId && googleClientSecret
+      ? [
+          Google({
+            clientId: googleClientId,
+            clientSecret: googleClientSecret,
+          }),
+        ]
+      : []),
     Credentials({
       name: "credentials",
       credentials: {
@@ -92,5 +100,5 @@ export const authConfig: NextAuthConfig = {
     },
   },
   session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 };
