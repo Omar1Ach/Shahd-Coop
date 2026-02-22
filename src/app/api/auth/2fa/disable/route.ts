@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   await User.findByIdAndUpdate(session.user.id, {
     twoFactorEnabled: false,
-    $unset: { twoFactorSecret: "", backupCodes: "" },
+    $unset: { twoFactorSecret: "", twoFactorBackupCodes: "" },
   });
 
   return NextResponse.json({ message: "2FA disabled successfully" });
