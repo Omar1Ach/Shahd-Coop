@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { Button, Input, Card, CardHeader, CardTitle, CardContent, Spinner } from "@/components/ui";
+import { Button, Input, Card, CardHeader, CardTitle, CardContent } from "@/components/ui";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -30,6 +30,16 @@ export default function RegisterPage() {
 
     if (form.password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+
+    if (!/[A-Z]/.test(form.password)) {
+      setError("Password must contain at least one uppercase letter.");
+      return;
+    }
+
+    if (!/[0-9]/.test(form.password)) {
+      setError("Password must contain at least one number.");
       return;
     }
 

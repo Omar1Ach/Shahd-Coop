@@ -26,15 +26,20 @@ export async function deleteCache(key: string): Promise<void> {
 }
 
 /**
- * Delete multiple keys matching a pattern.
- * NOTE: redis.keys() is O(N) — only use in admin/low-traffic paths.
- * For high-traffic invalidation, prefer explicit key deletion.
+ * Delete multiple keys matching a pattern using cursor-based SCAN.
+ * Unlike keys(), scan() does not block the Redis server.
  */
 export async function deleteCacheByPattern(pattern: string): Promise<void> {
-  const keys = await redis.keys(pattern);
-  if (keys.length > 0) {
-    await redis.del(...keys);
-  }
+  let cursor = "0";
+  do {
+    const result = await redis.scan(cursor, { match: pattern, count: 100 });
+    const nextCursor = String(result[0]);
+    const keys = result[1] as string[];
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+    cursor = nextCursor;
+  } while (cursor !== "0");
 }
 
 // ─── Cart cache ───────────────────────────────────────────────────────────────

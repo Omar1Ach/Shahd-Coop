@@ -113,6 +113,13 @@ export default async function RootLayout({
       className={fontVars}
       data-scroll-behavior="smooth"
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("shahd-theme")||"system";var d=t==="system"?window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light":t;document.documentElement.classList.add(d);document.documentElement.setAttribute("data-theme",d)}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="antialiased flex min-h-screen flex-col bg-[var(--color-bg)] text-[var(--color-text-primary)]">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SessionProvider>

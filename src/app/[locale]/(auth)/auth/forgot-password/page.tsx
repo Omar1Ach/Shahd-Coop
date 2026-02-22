@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { Button, Input, Card, CardHeader, CardTitle, CardContent, Spinner } from "@/components/ui";
+import { Button, Input, Card, CardHeader, CardTitle, CardContent } from "@/components/ui";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -60,8 +60,8 @@ export default function ForgotPasswordPage() {
                   required
                   placeholder="you@example.com"
                 />
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? <Spinner size="sm" /> : "Send Reset Link"}
+                <Button type="submit" fullWidth loading={loading}>
+                  Send Reset Link
                 </Button>
               </form>
               <p className="mt-4 text-center text-sm text-[var(--color-text-muted)]">

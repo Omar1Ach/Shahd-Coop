@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { routing } from "./src/i18n/routing";
+
+const locale = routing.defaultLocale;
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -7,11 +10,11 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      { source: "/login", destination: "/fr/auth/login", permanent: true },
-      { source: "/register", destination: "/fr/auth/register", permanent: true },
-      { source: "/forgot-password", destination: "/fr/auth/forgot-password", permanent: true },
-      { source: "/reset-password", destination: "/fr/auth/reset-password", permanent: true },
-      { source: "/verify-email", destination: "/fr/auth/verify-email", permanent: true },
+      { source: "/login", destination: `/${locale}/auth/login`, permanent: true },
+      { source: "/register", destination: `/${locale}/auth/register`, permanent: true },
+      { source: "/forgot-password", destination: `/${locale}/auth/forgot-password`, permanent: true },
+      { source: "/reset-password", destination: `/${locale}/auth/reset-password`, permanent: true },
+      { source: "/verify-email", destination: `/${locale}/auth/verify-email`, permanent: true },
     ];
   },
   images: {
