@@ -78,6 +78,22 @@ export default async function middleware(req: NextRequest) {
       applySecurityHeaders(res);
       return res;
     }
+
+    // Block banned users from non-public API routes
+    if (!pathname.startsWith("/api/auth") && !pathname.startsWith("/api/health") &&
+        !pathname.startsWith("/api/products") && !pathname.startsWith("/api/categories") &&
+        !pathname.startsWith("/api/search")) {
+      const apiToken = await getToken({
+        req,
+        secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+      });
+      if (apiToken && (apiToken as { isBanned?: boolean }).isBanned) {
+        const res = NextResponse.json({ error: "Account banned" }, { status: 403 });
+        applySecurityHeaders(res);
+        return res;
+      }
+    }
+
     const res = NextResponse.next();
     applySecurityHeaders(res);
     return res;
@@ -103,6 +119,13 @@ export default async function middleware(req: NextRequest) {
     const loginUrl = new URL(`/${locale}/auth/login`, req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     const res = NextResponse.redirect(loginUrl);
+    applySecurityHeaders(res);
+    return res;
+  }
+
+  // Block banned users from accessing protected routes
+  if ((token as { isBanned?: boolean }).isBanned) {
+    const res = NextResponse.redirect(new URL(`/${locale}/auth/login?error=banned`, req.url));
     applySecurityHeaders(res);
     return res;
   }

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   if (!token) return NextResponse.json({ error: "Token required" }, { status: 400 });
 
   await connectDB();
-  const user = await User.findById(session.user.id).select("twoFactorEnabled twoFactorSecret");
+  const user = await User.findById(session.user.id).select("twoFactorEnabled +twoFactorSecret");
 
   if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
     return NextResponse.json({ error: "2FA is not enabled" }, { status: 400 });

@@ -16,20 +16,23 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const { token, password } = parsed.data;
 
-    // Hash the incoming token to compare against the stored hash
-    const user = await User.findOne({
-      passwordResetToken: hashToken(token),
-      passwordResetExpires: { $gt: new Date() },
-    });
+    // Atomically find, update password, and $unset the reset token in one operation.
+    // This avoids token replay (select:false fields wouldn't be cleared by .save()).
+    const user = await User.findOneAndUpdate(
+      {
+        passwordResetToken: hashToken(token),
+        passwordResetExpires: { $gt: new Date() },
+      },
+      {
+        $set: { password: await bcrypt.hash(password, 12) },
+        $unset: { passwordResetToken: "", passwordResetExpires: "" },
+      },
+      { new: true }
+    );
 
     if (!user) {
       return NextResponse.json({ error: "Invalid or expired reset token" }, { status: 400 });
     }
-
-    user.password = await bcrypt.hash(password, 12);
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
 
     return NextResponse.json({ message: "Password reset successfully. You can now log in." });
   } catch (err) {

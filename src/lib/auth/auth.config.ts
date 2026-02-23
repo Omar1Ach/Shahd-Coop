@@ -22,7 +22,7 @@ export const authConfig: NextAuthConfig = {
 
         await connectDB();
         const user = await User.findOne({ email: parsed.data.email }).select(
-          "+password +twoFactorSecret +twoFactorEnabled +twoFactorBackupCodes"
+          "+password +twoFactorSecret +twoFactorEnabled +twoFactorBackupCodes isBanned"
         );
         if (!user || !user.password) return null;
 
@@ -30,14 +30,12 @@ export const authConfig: NextAuthConfig = {
         if (!valid) return null;
 
         if (!user.isEmailVerified) return null;
+        if (user.isBanned) return null;
 
         if (user.twoFactorEnabled) {
-          const rawTotp = (credentials as { totpCode?: string })?.totpCode;
-          const totpCode = rawTotp?.toString().trim();
+          const totpCode = parsed.data.totpCode;
           const isBackupCode =
-            (credentials as { isBackupCode?: boolean | string })?.isBackupCode ===
-            true ||
-            (credentials as { isBackupCode?: boolean | string })?.isBackupCode === "true";
+            parsed.data.isBackupCode === true || parsed.data.isBackupCode === "true";
 
           if (!totpCode) {
             throw new Error("TWO_FACTOR_REQUIRED");
@@ -81,8 +79,12 @@ export const authConfig: NextAuthConfig = {
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
         await connectDB();
-        const existing = await User.findOne({ email: user.email }).select("_id").lean();
-        if (!existing) {
+        const existing = await User.findOne({ email: user.email })
+          .select("_id isBanned")
+          .lean();
+        if (existing) {
+          if (existing.isBanned) return false;
+        } else {
           await User.create({
             name: user.name ?? user.email,
             email: user.email,
@@ -95,12 +97,27 @@ export const authConfig: NextAuthConfig = {
       }
       return true;
     },
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, account, trigger }) {
+      // On initial sign-in, resolve the MongoDB _id and role
       if (user) {
-        token.id = user.id;
-        token.role = user.role ?? "customer";
+        if (account?.provider === "credentials") {
+          // Credentials authorize already returns the MongoDB _id
+          token.id = user.id;
+          token.role = user.role ?? "customer";
+        } else {
+          // OAuth providers return a provider-specific ID, so look up the MongoDB user
+          await connectDB();
+          const dbUser = await User.findOne({ email: user.email })
+            .select("_id role isBanned")
+            .lean();
+          if (dbUser) {
+            token.id = dbUser._id.toString();
+            token.role = dbUser.role;
+            token.isBanned = dbUser.isBanned ?? false;
+          }
+        }
       }
-      // Only refresh from DB when session is explicitly updated (e.g. role change)
+      // Refresh from DB when session is explicitly updated (e.g. role change)
       if (trigger === "update" && token.id) {
         await connectDB();
         const dbUser = await User.findById(token.id).select("role isBanned").lean();

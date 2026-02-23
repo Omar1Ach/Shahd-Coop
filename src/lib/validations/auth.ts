@@ -3,6 +3,8 @@ import { z } from "zod";
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
+  totpCode: z.string().trim().optional(),
+  isBackupCode: z.union([z.boolean(), z.literal("true"), z.literal("false")]).optional(),
 });
 
 export const registerSchema = z.object({
